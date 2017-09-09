@@ -1,12 +1,12 @@
 {
   "name": "weibo-simulation-api",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "微博模拟登录发布微博api",
-  "main": "dist/index.js",
+  "main": "lib/index.js",
   "scripts": {
-    "watch": "rimraf dist/ && babel src/ --out-dir dist/ --watch",
+    "watch": "rimraf lib/ && babel src/ --out-dir lib/ --watch",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rimraf dist/ && babel src/ --out-dir dist/",
+    "build": "rimraf lib/ && babel src/ --out-dir lib/",
     "prepublish": "npm run build"
   },
   "devDependencies": {

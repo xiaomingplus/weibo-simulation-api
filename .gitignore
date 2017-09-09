@@ -1,6 +1,5 @@
 .svn/
 .examplerc
-dist
 # General
 *.DS_Store
 .AppleDouble
