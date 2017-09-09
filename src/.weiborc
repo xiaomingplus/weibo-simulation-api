@@ -1,0 +1,6 @@
+{
+    //配置文件
+    "cookieErrorRetryTime":3,//cookie获取失败，重试次数
+    "cookieExpire":72000,//cookie过期时间，单位是s
+    "tokenFolders":"./tokens"//token存储的文件夹
+}
