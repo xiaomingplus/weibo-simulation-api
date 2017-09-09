@@ -12,16 +12,14 @@ const {LOGIN_ERROR} = require('../constans/code')
 class Cookie {
     constructor(params) {
         this.cookie = null;
+        if(!params.username || !params.password){
+            throw new Error('用户名或密码必须');
+            return;
+        }
         this.username = params.username;
         this.password = params.password;
         this.cookieKey = `cookie_${this.username}`;
         //check require
-    }
-    interval(){
-        //定时检测，更新cookie
-    }
-    refresh(){
-        //刷新cookie
     }
      async init(){
         // console.log('cookie init',);
