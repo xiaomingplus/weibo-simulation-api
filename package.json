@@ -1,7 +1,7 @@
 {
-  "name": "weibo",
+  "name": "weibo-simulation-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "微博模拟登录发布微博api",
   "main": "dist/index.js",
   "scripts": {
     "watch": "rimraf dist/ && babel src/ --out-dir dist/ --watch",
@@ -16,8 +16,8 @@
     "babel-preset-env": "^1.6.0",
     "rimraf": "^2.6.1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["微博","微博模拟登录","微博发布","发布图片微博"],
+  "author": "xiaomingplus",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.16.2",
