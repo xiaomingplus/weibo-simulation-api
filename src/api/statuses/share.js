@@ -54,7 +54,7 @@ module.exports = function(params){
             if(body.code == '100000'){
                 return {
                     meta:{
-                        code:100000,//0代表成功                        
+                        code:100000,//0代表成功                      
                     },
                     data:format.parsePostWeiboResponse(body.data.html)
 

@@ -5,9 +5,10 @@ const fs = require('fs');
 const querystring = require('querystring');
 const encodePostData = require('./encode_post_data.js');
 const readline = require('readline');
-const {errorPromise} = require('./format')
+const {NEED_PIN} = require('../constans/code');
+const url = require('url')
 class weiboLogin {
-  constructor(userName, userPwd) {
+  constructor(userName, userPwd,onNeedPinCode) {
     // 初始化一些登录信息
     // 用户名
     this.userName = userName;
@@ -21,13 +22,13 @@ class weiboLogin {
     this.preLoginData = '';
     // 初始化验证码为空
     this.pinCode = null;
+    this.onNeedPinCode = onNeedPinCode || function(){};
     // 登录状态
     // this.loginStatus = 0;
   };
-  init() {
+  async init() {
     // 初始化预登陆url，加上base64编码的用户名
-    this.encodePreLoginUrl();
-    return (async () => {
+      this.encodePreLoginUrl();
       try {
         // 获取预登陆原始数据
         let preLoginInitData = await this.getPreLoginData();
@@ -35,23 +36,37 @@ class weiboLogin {
         this.preLoginData = await this.parsePreLoginData(preLoginInitData);
         // 是否需要验证码
         if(this.preLoginData['showpin'] == 1) {
-          return errorPromise({
-              code:NEED_PIN,
-              msg:"需要验证码",
-              data:{
-                  url:this.getPinImg()
-              }
-          });
-          //需要验证码的暂不处理
-        //   this.pinCode = await this.inputPinCode();
+            return new Promise((resolve,reject)=>{
+                let codeUrl = this.getPinImg();
+                let codeKey = url.parse(codeUrl,true).query.p;
+                this.onNeedPinCode({
+                    codeKey,
+                    codePictureUrl:codeUrl,
+                    callback:async (code)=>{
+                        // console.log('回调验证码code',code);
+                        this.pinCode = code;
+                        try {
+                            var responseBody = await this.postData();
+                            var finnalLoginUrl = await this.getFinnalLoginUrl(responseBody);
+                        } catch (error) {
+                            return reject(error)
+                        }
+                        return resolve(this.getCookies(finnalLoginUrl));
+                      }
+                })
+            })
         }
-        let responseBody = await this.postData();
-        let finnalLoginUrl = await this.getFinnalLoginUrl(responseBody);
-        return await this.getCookies(finnalLoginUrl);
+        try {
+            var responseBody = await this.postData();
+            var finnalLoginUrl = await this.getFinnalLoginUrl(responseBody);
+        } catch (error) {
+            return Promise.reject(error)
+        }
+
+        return this.getCookies(finnalLoginUrl);
       } catch(err) {
         return Promise.reject(err);
       }
-    })()
   }
   // preLoginUrl构造，加上base64编码的用户名
   encodePreLoginUrl() {
@@ -90,19 +105,6 @@ class weiboLogin {
     return pinImgUrl;
     // request(pinImgUrl).pipe(fs.createWriteStream('./pinCode.png'));
   }
-  inputPinCode() {
-    const rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout
-    });
-    return new Promise((resolve, reject) => {
-      rl.question('请输入验证码，验证码图片在根目录下\n', (pinCode) => {
-        console.log(`你输入的验证码为：${pinCode}`);
-        rl.close();
-        resolve(pinCode);
-      })
-    })
-  }
   // post数据到服务器
   postData(pinCode) {
     let headers = {
@@ -125,6 +127,8 @@ class weiboLogin {
         if (!error && response.statusCode == 200) {
           response.setEncoding('utf-8');
           resolve(response.body);
+        }else{
+          reject(response.body)
         }
       })
     })
@@ -140,7 +144,7 @@ class weiboLogin {
       } else if (parseLoginUrl.retcode == 101){
         reject("登录失败，登录名或密码错误");
       } else if (parseLoginUrl.retcode == 2070){
-        reject("登录失败，验证码错误");
+        return reject("登录失败，验证码错误");
       } else {
         reject("未知错误");
       }

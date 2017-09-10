@@ -7,7 +7,8 @@ class Weibo {
         // console.log('start cookie');
         this.cookie = new Cookie({
             username:this.username,
-            password:this.password
+            password:this.password,
+            onNeedPinCode:params.onNeedPinCode
         });        
         
     }

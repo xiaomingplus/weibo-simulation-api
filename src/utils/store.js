@@ -8,7 +8,6 @@ const {NO_CACHE} = require('../constans/code')
 const config = require('rc')('weibo',{
     "tokenFolders":"./tokens"//token存储的文件夹
 })
-const {errorPromise} = require('./format');
 
 /*
 const store = new Store();
@@ -81,7 +80,7 @@ store.set('key',{"key":"value"},5000).then(()=>{
             }
         }
         if (!json) {
-            return errorPromise({
+            return Promise.reject({
                 code:NO_CACHE,
                 msg:'内容为空'
             });
@@ -98,7 +97,7 @@ store.set('key',{"key":"value"},5000).then(()=>{
                     try {
                         var parseValue = JSON.parse(json.value);
                     } catch (error) {
-                        return errorPromise(error);
+                        return Promise.reject(error);
                     }
                     return parseValue;
                 }else{
@@ -110,7 +109,7 @@ store.set('key',{"key":"value"},5000).then(()=>{
                 }catch(e){
                     console.error('remove fail',e);
                 }
-                return errorPromise({
+                return Promise.reject({
                     code:NO_CACHE,
                     msg:'内容为空'
                 });

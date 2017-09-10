@@ -1,6 +1,6 @@
 {
-  "name": "weibo-simulation-api",
-  "version": "1.0.1",
+  "name": "node-weibo-simulation-api",
+  "version": "1.0.2",
   "description": "微博模拟登录发布微博api",
   "main": "lib/index.js",
   "scripts": {
@@ -11,16 +11,26 @@
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
-    "babel-core": "^6.25.0",
+    "babel-core": "^6.26.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-object-assign": "^6.22.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.6.0",
     "rimraf": "^2.6.1"
   },
-  "keywords": ["微博","微博模拟登录","微博发布","发布图片微博"],
+  "keywords": [
+    "微博",
+    "微博模拟登录",
+    "微博发布",
+    "发布图片微博"
+  ],
   "author": "xiaomingplus",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.16.2",
+    "babel-plugin-transform-regenerator": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
     "base64-img": "^1.0.3",
     "cheerio": "^1.0.0-rc.2",
     "fs-extra": "^4.0.1",
@@ -28,6 +38,7 @@
     "rc": "^1.2.1",
     "readline": "^1.3.0",
     "replace-ext": "^1.0.0",
-    "request": "^2.81.0"
+    "request": "^2.81.0",
+    "babel-register": "^6.26.0"    
   }
 }

@@ -6,18 +6,22 @@ exports.errorPromise = function (err) {
 exports.error = function (err) {
     let code = -1;
     let message = "系统错误";
+    let data = {};
     let meta = {}
     if (err) {
         if (typeof (err) === 'object') {
             code = err.code || err.errCode || err.statusCode || code;
             message = err.message || err.msg || message;
+            if(err.data){
+                data = err.data;
+            }
             meta =  {
                 code,
                 message
             }
-        } else if (typeof (code) === 'number') {
+        } else if (typeof (err) === 'number') {
             meta =  {
-                code,
+                code:err,
                 message: "系统错误"
             }
         } else {
@@ -33,7 +37,8 @@ exports.error = function (err) {
         }
     }
     return {
-        meta
+        meta,
+        data
     }
 }
 /**

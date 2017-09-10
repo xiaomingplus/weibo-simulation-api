@@ -3,7 +3,7 @@ const {
     urlToBase64
 } = require('./pictureTool');
 const fse = require('fs-extra');
-//todo
+const {NO_PICTURE} = require('../constans/code')
 const format = require('./format');
 const config = require('rc')('weibo', {
     cookieErrorRetryTime: 3
@@ -43,10 +43,17 @@ exports.weiboRequest = function (params) {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Referer': host + '/friends'
     };
-    let promise = cookie.getWeiboCookie().then(cookieStr => {
-        headers.Cookie = cookieStr;
-        return Promise.resolve()
-    })
+    let promise;
+    if(params.cookieStr){
+        headers.Cookie = params.cookieStr;
+        promise = Promise.resolve()
+    }else{
+        promise = cookie.getWeiboCookie().then(cookieStr => {
+            headers.Cookie = cookieStr;
+            return Promise.resolve()
+        })
+    }
+
     promise = promise.then(data => {
         let requestParams = Object.assign({
             url: host + params.url,
@@ -69,7 +76,7 @@ exports.weiboRequest = function (params) {
                         return exports.weiboRequest(params);
                     })
                 } else {
-                    return format.errorPromise({
+                    return Promise.reject({
                         code: 9001,
                         message: "cookie 无效"
                     })
@@ -114,8 +121,8 @@ exports.weiboMultiUploadPicture = function (params) {
             }))
         })
     } else {
-        return errorPromise({
-            code: "",
+        return Promise.reject({
+            code: NO_PICTURE,
             msg: "图片不存在"
         })
     }
@@ -138,19 +145,19 @@ exports.weiboUploadPicture = async function (params) {
             base64Data = await urlToBase64(params.pictureUrl)            
         } catch (error) {
             console.log('error',error);
-            return errorPromise(error)
+            return Promise.reject(error)
         }
     } else if (params.pictureFile) {
         try {
             base64Data = await fse.readFile(params.pictureFile,'base64')            
         } catch (error) {
             console.log('error',error);
-            return errorPromise(error)
+            return Promise.reject(error)
         }
         // console.log('base64Data',base64Data);
     } else {
-        return errorPromise({
-            code: "",
+        return Promise.reject({
+            code: NO_PICTURE,
             msg: "图片不存在"
         })
     }
@@ -219,13 +226,13 @@ exports.weiboUploadPicture = async function (params) {
                             return exports.weiboUploadPicture(params);
                         })
                     } else {
-                        return format.errorPromise({
+                        return Promise.reject({
                             code: 9001,
                             message: "cookie 无效"
                         })
                     }
                 }else{
-                    return format.errorPromise({
+                    return Promise.reject({
                         code:response.ret,
                         message:"上传图片错误"
                     })

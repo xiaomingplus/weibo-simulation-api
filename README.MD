@@ -8,21 +8,28 @@
 1. 支持发送带图片微博（原图上传）
 1. 支持发布批量图片微博
 1. 支持发送base64，url，file格式的图片微博
+1. 支持验证码传入
 
 ## 注意事项
 
 1. 请注意不要泄露你的微博账户和密码
-1. 请关掉微博的登录保护（因为登录保护会开启验证码登录
+1. 请关掉微博的登录保护
 
 ## 如何使用？
 
-    npm i weibo-simulation-api
+    npm i node-weibo-simulation-api
 
-    const weiboSimulation = require('weibo-simulation-api');
-    const weibo = new weiboSimulation({
-        username:"xxx@gmail.com",
-        password:"xxxxxx"
-    });
+    const weiboSimulation = require('node-weibo-simulation-api');
+    const weibo = new Weibo({
+        username: "test@qq.com", //微博账号
+        password: "password", //微博密码
+        onNeedPinCode: function (params) {
+            //当需要验证码的时候会回调这里,这里会传入本次验证码的url和codeKey，人工辨识后，然后回调下params.callback('具体的验证码');
+            console.log('codePictureUrl', params.codePictureUrl);
+            console.log('codeKey', params.codeKey);
+            params.callback('rxs2s');//这里具体的逻辑自己实现
+        }
+    })
 
 ### 发送一条微博
 
@@ -71,7 +78,8 @@
  9001 | cookie无效 | 这个一般是已经重试过3次以上但还是有问题的情况了，建议跟着代码调试下
  100001 | 10分钟内发的微博内容一致 | 修改文本内容
  9003 | 登录需要验证码 | 在设置里关闭微博的登录验证
- 9004 | 登录错误 | 请查看具体错误信息
+ 9004 | 图片不存在 | 没有传图片，请检查参数
+ 9005 | 登录错误 | 请查看具体错误信息
 
 ## 示例
 
