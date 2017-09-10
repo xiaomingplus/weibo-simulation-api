@@ -6,7 +6,6 @@
 .LSOverride
 # Icon must end with two \r
 Icon
-
 .vscode/*
 # Cache files for Sublime Text
 *.tmlanguage.cache
