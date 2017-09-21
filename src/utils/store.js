@@ -4,7 +4,8 @@
 const memeryStoreMap = {};//内存级别的存储
 const fse = require('fs-extra');//文件存储
 const path = require('path');
-const {NO_CACHE} = require('../constans/code')
+const {NO_CACHE} = require('../constans/code');
+const mkdirp = require('mkdirp');
 const config = require('rc')('weibo',{
     "tokenFolders":"./tokens"//token存储的文件夹
 })
@@ -34,6 +35,7 @@ store.set('key',{"key":"value"},5000).then(()=>{
 })
 */
 
+
  class Store {
     constructor(params) {
         this.type = 'file';//本地文件存储
@@ -56,7 +58,7 @@ store.set('key',{"key":"value"},5000).then(()=>{
             try {
                 memeryStoreMap[key] = struct;
                 let filePath = path.join(__dirname,'../',config.tokenFolders,`${key}.json`);
-                // console.log('filePath',filePath);
+                await mkdir(path.dirname(filePath))
                 await fse.writeJson(filePath,struct);
                 return Promise.resolve(struct);
             } catch (e) {
@@ -76,7 +78,10 @@ store.set('key',{"key":"value"},5000).then(()=>{
                 // console.log('jsonPath',jsonPath);
                 json = await fse.readJson(jsonPath);            
             }catch(e){
-                return Promise.reject(e);
+                return Promise.reject({
+                    code:NO_CACHE,
+                    msg:'内容为空'
+                });
             }
         }
         if (!json) {
@@ -128,5 +133,12 @@ store.set('key',{"key":"value"},5000).then(()=>{
         return Promise.resolve()
     }
 }
-
+function mkdir(path){
+    return new Promise((s,f)=>{
+        mkdirp(path, function (err) {
+            if (err) return f(err)
+            else return s()
+        });
+    })
+}
 module.exports = Store;
