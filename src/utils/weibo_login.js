@@ -157,7 +157,7 @@ class weiboLogin {
       request.get({url: finnalLoginUrl, jar: j}, function (error, reponse, body) {
         let cookies = j.getCookieString(finnalLoginUrl);
             resolve(cookies);
-        
+
       })
     })
   }

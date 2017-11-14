@@ -29,22 +29,22 @@ class Cookie {
         clearTimeout(this.timer);
         this.timer = setTimeout(async () =>{
             try {
-                var cookie = await store.get(this.cookieKey);  
+                var cookie = await store.get(this.cookieKey);
             } catch (error) {
                 console.log('auto refresh fail');
                 try {
-                    await this.init()                    
+                    await this.init()
                 } catch (error) {
                     console.log('init fail');
                 }
             }
             //请求下微博的网页
             weiboRequest({cookieStr:cookie,url:"/friends",method:"get"}).then(data=>{
-                this.autoRefresh()                
+                this.autoRefresh()
             }).catch(async e=>{
                 console.log('auto refresh fail ',e);
                 try {
-                    await this.init()                    
+                    await this.init()
                 } catch (error) {
                     console.log('init refresh fail');
                 }
@@ -57,7 +57,7 @@ class Cookie {
         try {
             // console.log('this.username,this.password',this.username,this.password);
             this.weiboLogin = new weiboLogin(this.username,this.password,this.onNeedPinCode);
-           var cookie =  await this.weiboLogin.init()   
+           var cookie =  await this.weiboLogin.init()
         }catch(e){
             //
             console.log('init login error',e);
@@ -86,10 +86,10 @@ class Cookie {
                     return this.init();
                 }else{
                     // console.log('get this.cookieKey',this.cookieKey);
-                    var cookie = await store.get(this.cookieKey);                    
-                }    
+                    var cookie = await store.get(this.cookieKey);
+                }
             } catch (error) {
-                console.log('get this.cookieKey error',error);
+                // console.log('get this.cookieKey error',error);
                 return this.init();
             }
             // console.log('get this.cookieKey success',cookie);

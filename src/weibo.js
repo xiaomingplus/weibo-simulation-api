@@ -9,13 +9,14 @@ class Weibo {
             username:this.username,
             password:this.password,
             onNeedPinCode:params.onNeedPinCode
-        });        
-        
+        });
+
     }
     api(apiPath,params){
-        return api(apiPath,Object.assign({
+        const apiLib = api(apiPath,Object.assign({
             cookie:this.cookie
         },params));
+        return apiLib
     }
 }
 
