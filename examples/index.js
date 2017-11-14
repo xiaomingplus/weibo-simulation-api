@@ -3,8 +3,8 @@ const path = require('path');
 const readline = require('readline');
 
 const weibo = new Weibo({
-    username: "jiantingzhe@qq.com", //微博账号
-    password: "Weibo110139", //微博密码
+    username: "xx@qq.com", //微博账号
+    password: "xx", //微博密码
     onNeedPinCode: function (params) {
         //当需要验证码的时候会回调这里,这里会传入本次验证码的url和codeKey，人工辨识后，然后回调下params.callback('具体的验证码');
         console.log('codePictureUrl', params.codePictureUrl);
