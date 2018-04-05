@@ -40,23 +40,28 @@ class weiboLogin {
             "prelt": "0",
             "returntype": "TEXT",
         };
-        request.post(this.loginUrl,{
-            jar:j,
-            form:postData
-        },function(err,res,body){
-            if(err){
+        request.post(this.loginUrl, {
+            jar: j,
+            form: postData
+        },  (err, res, body)=> {
+            if (err) {
                 //错误
                 return reject(err);
             }
-            if(res && res.statusCode === 2000 && body && body.retcode == 0){
-                //登录成功
-                let cookie_string = j.getCookieString(url); // "key1=value1; key2=value2; ..."
-
-                return resolve(cookie_string)
-            }else{
-                return reject(body);s
+            let result = {};
+            try {
+                result = JSON.parse(body);
+            } catch (e) {
+                return reject(e);
             }
-        })
+            if (res && res.statusCode === 200 && result.retcode == 0) {
+                //登录成功
+                let cookie_string = j.getCookieString(this.loginUrl); // "key1=value1; key2=value2; ..."
+                return resolve(cookie_string);
+            } else {
+                return reject(body);
+            }
+        });
     })
   }
 }
