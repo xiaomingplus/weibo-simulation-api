@@ -1,6 +1,6 @@
 {
     "name": "node-weibo-simulation-api",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "description": "微博模拟登录发布微博api",
     "main": "lib/index.js",
     "repository": {
