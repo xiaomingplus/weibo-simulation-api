@@ -1,5 +1,7 @@
 .svn/
 .examplerc
+src/tokens/
+lib
 # General
 *.DS_Store
 .AppleDouble

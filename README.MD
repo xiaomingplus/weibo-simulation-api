@@ -8,7 +8,6 @@
 1. 支持发送带图片微博（原图上传）
 1. 支持发布批量图片微博
 1. 支持发送base64，url，file格式的图片微博
-1. 支持验证码传入
 
 ## 注意事项
 
@@ -23,12 +22,6 @@
     const weibo = new Weibo({
         username: "test@qq.com", //微博账号
         password: "password", //微博密码
-        onNeedPinCode: function (params) {
-            //当需要验证码的时候会回调这里,这里会传入本次验证码的url和codeKey，人工辨识后，然后回调下params.callback('具体的验证码');
-            console.log('codePictureUrl', params.codePictureUrl);
-            console.log('codeKey', params.codeKey);
-            params.callback('rxs2s');//这里具体的逻辑自己实现
-        }
     })
 
 ### 发送一条微博

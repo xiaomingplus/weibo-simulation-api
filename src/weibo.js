@@ -8,7 +8,6 @@ class Weibo {
         this.cookie = new Cookie({
             username:this.username,
             password:this.password,
-            onNeedPinCode:params.onNeedPinCode
         });
 
     }

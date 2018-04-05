@@ -1,7 +1,7 @@
 /**
  * 管理cookie相关
  */
-const weiboLogin = require('./weibo_login.js').weiboLogin;
+const weiboLogin = require('./weiboLogin.js').weiboLogin;
 const config = require('rc')('weibo',{
     cookieExpire:31536000,
     autoRefreshTime:3600

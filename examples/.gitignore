@@ -1,5 +1,6 @@
 .svn/
 .examplerc
+index.test.js
 dist
 # General
 *.DS_Store
