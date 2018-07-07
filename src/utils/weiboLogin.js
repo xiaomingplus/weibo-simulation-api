@@ -40,21 +40,21 @@ class weiboLogin {
             "prelt": "47",
             "returntype": "TEXT",
         };
-     
+        let headers = {
+            'Pragma': 'no-cache',
+            'Origin': 'https://login.sina.com.cn',
+            'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36',
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Accept': '*/*',
+            'Cache-Control': 'no-cache',
+            'Referer': 'https://login.sina.com.cn/signup/signin.php?entry=sso',
+            'Connection': 'keep-alive'
+        }
         request.post(this.loginUrl, {
             jar: j,
             form: postData,
-            headers: {
-                'Pragma': 'no-cache',
-                'Origin': 'https://login.sina.com.cn',
-                'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
-                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36',
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Accept': '*/*',
-                'Cache-Control': 'no-cache',
-                'Referer': 'https://login.sina.com.cn/signup/signin.php?entry=sso',
-                'Connection': 'keep-alive'
-            }
+            headers
         },  (err, res, body)=> {
             if (err) {
                 //错误
@@ -67,10 +67,23 @@ class weiboLogin {
                 return reject(e);
             }
             console.log('result',result);
-            if (res && res.statusCode === 200 && result.retcode == 0) {
-                //登录成功
-                let cookie_string = j.getCookieString(this.loginUrl); // "key1=value1; key2=value2; ..."
-                return resolve(cookie_string);
+            if (res && res.statusCode === 200 && result.retcode == 0 && result.crossDomainUrlList[0]) {
+                //登录成功,再去登录weibo.com下
+                let weiboPassUrl = result.crossDomainUrlList[0];
+                request.get(weiboPassUrl,{
+                    jar: j,
+                    headers
+                },(err,res,body)=>{
+                    if (err) {
+                        //错误
+                        return reject(err);
+                    }
+                    let cookie_string = j.getCookieString(weiboPassUrl); // "key1=value1; key2=value2; ..."
+                    // console.log('cookie_string',cookie_string);
+                    return resolve(cookie_string); 
+                })
+
+
             } else {
                 return reject(body);
             }
