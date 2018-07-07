@@ -67,21 +67,55 @@ class weiboLogin {
                 return reject(e);
             }
             console.log('result',result);
-            if (res && res.statusCode === 200 && result.retcode == 0 && result.crossDomainUrlList[0]) {
-                //登录成功,再去登录weibo.com下
-                let weiboPassUrl = result.crossDomainUrlList[0];
-                request.get(weiboPassUrl,{
-                    jar: j,
+            if (res && res.statusCode === 200 && result.retcode == 0 ) {
+                //登录成功,先去获取weibo.com的登录地址，
+                // let sina_cookie_string = j.getCookieString(weiboPassUrl); // "key1=value1; key2=value2; ..."
+                let crossUrl = 'https://login.sina.com.cn/crossdomain2.php?action=login&r=https%3A%2F%2Flogin.sina.com.cn%2Fsso%2Flogin.php%3Fclient%3Dssologin.js(v1.4.15)'
+                request.get(crossUrl,{
+                    jar:j,
                     headers
                 },(err,res,body)=>{
                     if (err) {
                         //错误
                         return reject(err);
                     }
-                    let cookie_string = j.getCookieString(weiboPassUrl); // "key1=value1; key2=value2; ..."
-                    // console.log('cookie_string',cookie_string);
-                    return resolve(cookie_string); 
+                    console.log('body',body);
+
+                    let regexArr = body.match(/setCrossDomainUrlList\((.+?)\)/);
+                    let weiboResultJson = {}
+                    if(regexArr){
+                        try{
+                            weiboResultJson = JSON.parse(regexArr[1]);
+                        }catch(e){
+                            console.error('jsonparse error',e);
+                        }
+                        if(weiboResultJson.arrURL && weiboResultJson.arrURL[0]){
+                            //yes
+                            let weiboPassUrl = weiboResultJson.arrURL[0];
+                            console.log('weiboPassUrl',weiboPassUrl);
+                            request.get(weiboPassUrl,{
+                                jar: j,
+                                headers
+                            },(err,res,body)=>{
+                                if (err) {
+                                    //错误
+                                    return reject(err);
+                                }
+                                let cookie_string = j.getCookieString(weiboPassUrl); // "key1=value1; key2=value2; ..."
+                                console.log('cookie_string',cookie_string);
+                                return resolve(cookie_string); 
+                            })
+                        }else{
+                            return reject({
+                                code:-9999,
+                                message:"登录失败"
+                            });
+
+                        }
+                    }
                 })
+                
+               
 
 
             } else {
