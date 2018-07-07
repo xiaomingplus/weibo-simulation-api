@@ -2,10 +2,8 @@
  * 管理cookie相关
  */
 const weiboLogin = require('./weiboLogin.js').weiboLogin;
-const config = require('rc')('weibo',{
-    cookieExpire:31536000,
-    autoRefreshTime:3600
-});
+const config = require('../weibo.config')
+console.log('config',config);
 const {weiboRequest} = require('./index');
 const Store = require('./store');
 const store = new Store();
@@ -40,6 +38,7 @@ class Cookie {
             }
             //请求下微博的网页
             weiboRequest({cookieStr:cookie,url:"/friends",method:"get"}).then(data=>{
+                console.log('yes refresh success');
                 this.autoRefresh()
             }).catch(async e=>{
                 console.log('auto refresh fail ',e);
@@ -91,6 +90,10 @@ class Cookie {
             } catch (error) {
                 // console.log('get this.cookieKey error',error);
                 return this.init();
+            }
+            console.log('this.timer',this.timer);
+            if(!this.timer){
+                this.autoRefresh();
             }
             // console.log('get this.cookieKey success',cookie);
             return Promise.resolve(cookie)

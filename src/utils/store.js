@@ -6,9 +6,7 @@ const fse = require('fs-extra');//文件存储
 const path = require('path');
 const {NO_CACHE} = require('../constans/code');
 const mkdirp = require('mkdirp');
-const config = require('rc')('weibo',{
-    "tokenFolders":"./tokens"//token存储的文件夹
-})
+const config = require('../weibo.config');
 
 /*
 const store = new Store();

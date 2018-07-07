@@ -5,11 +5,10 @@ const {
 const fse = require('fs-extra');
 const {NO_PICTURE} = require('../constans/code')
 const format = require('./format');
-const config = require('rc')('weibo', {
-    cookieErrorRetryTime: 3
-})
+const config = require('../weibo.config')
 exports.request = function (params) {
-
+    //TODO
+    // return Promise.resolve()
     // console.log('request params', params);
     return new Promise((resolve, reject) => {
         // return resolve({
@@ -38,10 +37,15 @@ exports.weiboRequest = function (params) {
     const host = 'https://weibo.com';
     var headers = {
         'Origin': host,
+        'Pragma': 'no-cache',
         "Host":"weibo.com",        
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36',
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36',
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Referer': host + '/friends'
+        'Referer': host + '/friends',
+        'Accept': '*/*',
+        'Cache-Control': 'no-cache',
+        'X-Requested-With': 'XMLHttpRequest',
+        'Connection': 'keep-alive',
     };
     let promise;
     if(params.cookieStr){
