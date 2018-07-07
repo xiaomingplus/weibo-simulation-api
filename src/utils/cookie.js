@@ -91,7 +91,7 @@ class Cookie {
                 // console.log('get this.cookieKey error',error);
                 return this.init();
             }
-            console.log('this.timer',this.timer);
+            // console.log('this.timer',this.timer);
             if(!this.timer){
                 this.autoRefresh();
             }

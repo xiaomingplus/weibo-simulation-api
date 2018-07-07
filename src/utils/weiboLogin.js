@@ -28,7 +28,7 @@ class weiboLogin {
             "from": "null",
             "savestate": "30",
             "useticket": "0",
-            "pagerefer": "",
+            pagerefer: 'https://login.sina.com.cn/sso/login.php?client=ssologin.js(v1.4.15)',
             "vsnf": "1",
             "su": usernameBase64,
             "service": "sso",
@@ -37,12 +37,24 @@ class weiboLogin {
             "encoding": "UTF-8",
             "cdult": "3",
             "domain": "sina.com.cn",
-            "prelt": "0",
+            "prelt": "47",
             "returntype": "TEXT",
         };
+     
         request.post(this.loginUrl, {
             jar: j,
-            form: postData
+            form: postData,
+            headers: {
+                'Pragma': 'no-cache',
+                'Origin': 'https://login.sina.com.cn',
+                'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36',
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Accept': '*/*',
+                'Cache-Control': 'no-cache',
+                'Referer': 'https://login.sina.com.cn/signup/signin.php?entry=sso',
+                'Connection': 'keep-alive'
+            }
         },  (err, res, body)=> {
             if (err) {
                 //错误
@@ -54,6 +66,7 @@ class weiboLogin {
             } catch (e) {
                 return reject(e);
             }
+            console.log('result',result);
             if (res && res.statusCode === 200 && result.retcode == 0) {
                 //登录成功
                 let cookie_string = j.getCookieString(this.loginUrl); // "key1=value1; key2=value2; ..."
